@@ -13,7 +13,7 @@ loginRouter.post("/",async(req,res)=>{
         return res.send({message:"User is not registered try signing in",loggedIn:false,token:null})
     }
     if(password == isPresent.password){
-        if(isPresent.wrongAttempts>5){
+        if(isPresent.wrongAttempts>4){
             let now = Date.now()
 
             if(Number(now)>Number(isPresent.nextTry)){
@@ -31,13 +31,13 @@ loginRouter.post("/",async(req,res)=>{
     }
 
     if(password!= isPresent.password){
-        if(isPresent.wrongAttempts<5){
+        if(isPresent.wrongAttempts<4){
             const user = await UserModel.findOneAndUpdate({email:email},{wrongAttempts:isPresent.wrongAttempts+1},{returnNewDocument:true})
             console.log(user)
             //await user.save()
             return res.send({message:"Wrong Password try again",loggedIn:false,token:null})
         }
-        if(isPresent.wrongAttempts  == 5){
+        if(isPresent.wrongAttempts  == 4){
             let lastAttemptTime =  new Date()
             let blockTime = lastAttemptTime.setHours(lastAttemptTime.getHours()+24);
             await UserModel.findOneAndUpdate({email:email},{wrongAttempts:isPresent.wrongAttempts+1,nextTry:blockTime},{returnNewDocument:true})
