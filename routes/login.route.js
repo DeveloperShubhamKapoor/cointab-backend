@@ -25,7 +25,7 @@ loginRouter.post("/",async(req,res)=>{
                 return res.send({message:"User is blocked try after 24 hours",token:null,loggedIn:false})
             }
         }
-        await UserModel.findOneAndUpdate({email:email},{...isPresent,wrongAttempts:0,nextTry:""},{returnNewDocument:true})
+        await UserModel.findOneAndUpdate({email:email},{wrongAttempts:0,nextTry:""},{returnNewDocument:true})
         const token = jwt.sign({email:email},process.env.SECRET_KEY)
         return res.send({message:"User logged in successfully",token:token,loggedIn:true,email:email})
     }
